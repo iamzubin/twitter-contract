@@ -3,24 +3,14 @@ pragma solidity 0.7.6;
 
 import "hardhat/console.sol";
 
-contract Greeter {
-    bytes32 storedData;
+contract Verifier {
     mapping (address => bytes32) verified;
 
     address signerAddress;
 
-    function set(bytes32 x) public {
-        storedData = x;
-    }
-
     constructor(address signerAddr) {
       signerAddress = signerAddr;
     }
-
-    function get() public view returns (bytes32) {
-        return storedData;
-    }
-
 
     function verify(address addr, bytes32 twitterId) internal {
       verified[addr] = twitterId;
@@ -34,7 +24,6 @@ contract Greeter {
         uint8 v,
         bytes32 r,
         bytes32 s,
-        address userAddr,
         bytes32 twitterId,
         uint256 deadline
     ) external {
@@ -50,7 +39,7 @@ contract Greeter {
         bytes32 hashStruct = keccak256(
             abi.encode(keccak256("set(bytes32 twitterId,address userAddr,uint256 deadline)"), 
             twitterId,
-            userAddr,
+            msg.sender,
             deadline
             )
         );
@@ -62,6 +51,10 @@ contract Greeter {
         require(signer == signerAddress, "MyFunction: invalid signature");
         require(signer != address(0), "ECDSA: invalid signature");
 
-        verify(userAddr, twitterId);
+        verify(msg.sender, twitterId);
+    }
+
+    function removeVerification() public {
+      delete verified[msg.sender];
     }
 }
