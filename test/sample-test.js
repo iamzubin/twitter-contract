@@ -26,6 +26,7 @@ describe("Verifier", function () {
         // ],
         set: [
           { name: "twitterId", type: "string" },
+          { name: "tweetId", type: "string" },
           { name: "userAddr", type: "address" },
           { name: "timestamp", type: "uint256" },
         ]
@@ -33,6 +34,7 @@ describe("Verifier", function () {
       primaryType: "set",
       domain: { name: "SublimeTwitter", version: "1" , chainId : 31337, verifyingContract:  verifier.address },
       message: {
+        twitterId: x,
         twitterId: x,
         userAddr: userAddr,
         timestamp: deadline,
